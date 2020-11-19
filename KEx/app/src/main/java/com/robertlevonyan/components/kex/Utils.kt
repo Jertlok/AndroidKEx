@@ -243,17 +243,26 @@ class TypedRecyclerAdapter<T> : RecyclerView.Adapter<TypedRecyclerAdapter.TypedV
         creator(holder.itemView!!, item, position, currentType)
     }
 
+    fun getItem(position: Int): T {
+        items?.let {
+            return it[position]
+        } ?: itemsList?.let {
+            return it[position]
+        }
+        ?: throw NullPointerException("Your list is empty")
+    }
+
     override fun getItemViewType(position: Int): Int {
         return itemTypes(position)
     }
 
-    fun addItem(item: T) {
+    fun addItem(item: T, position: Int = 0) {
         if (itemsList == null) {
             throw NullPointerException("Your data is Array, change to List to add items dynamically")
         }
 
-        itemsList?.add(item)
-        notifyItemInserted(itemsList?.size!!)
+        itemsList?.add(position, item)
+        notifyItemInserted(position)
     }
 
     fun updateItem(item: T, position: Int) = if (itemsList == null) {
